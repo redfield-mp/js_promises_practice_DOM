@@ -21,6 +21,24 @@ const secondPromise = new Promise((resolve) => {
   });
 });
 
+const leftClick = new Promise((resolve) => {
+  document.addEventListener('click', () => {
+    resolve();
+  });
+});
+
+const rightClick = new Promise((resolve) => {
+  document.addEventListener('contextmenu', () => {
+    resolve();
+  });
+});
+
+const thirdPromise = new Promise((resolve) => {
+  Promise.all([leftClick, rightClick]).then(() => {
+    resolve('Third promise was resolved');
+  });
+});
+
 firstPromise
   .then((message) => {
     createMessage('success', message);
@@ -30,6 +48,14 @@ firstPromise
   });
 
 secondPromise
+  .then((message) => {
+    createMessage('success', message);
+  })
+  .catch((err) => {
+    createMessage('error', err);
+  });
+
+thirdPromise
   .then((message) => {
     createMessage('success', message);
   })
