@@ -1,7 +1,5 @@
 'use strict';
 
-'use strict';
-
 // write your code here
 const firstPromise = new Promise((resolve, reject) => {
   const handleClick = () => {
@@ -18,17 +16,14 @@ const firstPromise = new Promise((resolve, reject) => {
 });
 
 const secondPromise = new Promise((resolve) => {
-  const handleClick = () => {
-    document.removeEventListener('click', handleClick);
-    resolve('Second promise was resolved');
-  };
-  const handleContextMenu = () => {
-    document.removeEventListener('click', handleContextMenu);
+  const handleEvent = () => {
+    document.removeEventListener('click', handleEvent);
+    document.removeEventListener('contextmenu', handleEvent);
     resolve('Second promise was resolved');
   };
 
-  document.addEventListener('click', handleClick);
-  document.addEventListener('contextmenu', handleContextMenu);
+  document.addEventListener('click', handleEvent);
+  document.addEventListener('contextmenu', handleEvent);
 });
 
 const leftClick = new Promise((resolve) => {
@@ -49,10 +44,8 @@ const rightClick = new Promise((resolve) => {
   document.addEventListener('contextmenu', handleContextMenu);
 });
 
-const thirdPromise = new Promise((resolve) => {
-  Promise.all([leftClick, rightClick]).then(() => {
-    resolve('Third promise was resolved');
-  });
+const thirdPromise = Promise.all([leftClick, rightClick]).then(() => {
+  return 'Third promise was resolved';
 });
 
 firstPromise
