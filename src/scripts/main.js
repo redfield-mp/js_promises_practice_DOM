@@ -4,12 +4,13 @@
 const firstPromise = new Promise((resolve, reject) => {
   const handleClick = () => {
     document.removeEventListener('click', handleClick);
+    clearTimeout(timerID);
     resolve('First promise was resolved');
   };
 
   document.addEventListener('click', handleClick);
 
-  setTimeout(() => {
+  const timerID = setTimeout(() => {
     document.removeEventListener('click', handleClick);
     reject(new Error('First promise was rejected'));
   }, 3000);
@@ -26,51 +27,33 @@ const secondPromise = new Promise((resolve) => {
   document.addEventListener('contextmenu', handleEvent);
 });
 
-const leftClick = new Promise((resolve) => {
-  const handleClick = () => {
-    document.removeEventListener('click', handleClick);
-    resolve();
-  };
+function createEventPromise(eventName) {
+  return new Promise((resolve) => {
+    const handleEvent = () => {
+      document.removeEventListener(eventName, handleEvent);
+      resolve();
+    };
 
-  document.addEventListener('click', handleClick);
-});
+    document.addEventListener(eventName, handleEvent);
+  });
+}
 
-const rightClick = new Promise((resolve) => {
-  const handleContextMenu = () => {
-    document.removeEventListener('contextmenu', handleContextMenu);
-    resolve();
-  };
-
-  document.addEventListener('contextmenu', handleContextMenu);
-});
+const leftClick = createEventPromise('click');
+const rightClick = createEventPromise('contextmenu');
 
 const thirdPromise = Promise.all([leftClick, rightClick]).then(() => {
   return 'Third promise was resolved';
 });
 
-firstPromise
-  .then((message) => {
-    createMessage('success', message);
-  })
-  .catch((err) => {
-    createMessage('error', err.message);
-  });
-
-secondPromise
-  .then((message) => {
-    createMessage('success', message);
-  })
-  .catch((err) => {
-    createMessage('error', err.message);
-  });
-
-thirdPromise
-  .then((message) => {
-    createMessage('success', message);
-  })
-  .catch((err) => {
-    createMessage('error', err.message);
-  });
+function handlePromise(promise) {
+  promise
+    .then((message) => {
+      createMessage('success', message);
+    })
+    .catch((err) => {
+      createMessage('error', err.message);
+    });
+}
 
 function createMessage(type, message) {
   const div = document.createElement('div');
@@ -81,3 +64,7 @@ function createMessage(type, message) {
 
   document.body.appendChild(div);
 }
+
+handlePromise(firstPromise);
+handlePromise(secondPromise);
+handlePromise(thirdPromise);
