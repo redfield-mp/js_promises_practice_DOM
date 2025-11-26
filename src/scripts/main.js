@@ -59,8 +59,8 @@ firstPromise
   .then((message) => {
     createMessage('success', message);
   })
-  .catch((message) => {
-    createMessage('error', message);
+  .catch((err) => {
+    createMessage('error', err.message);
   });
 
 secondPromise
@@ -68,7 +68,7 @@ secondPromise
     createMessage('success', message);
   })
   .catch((err) => {
-    createMessage('error', err);
+    createMessage('error', err.message);
   });
 
 thirdPromise
@@ -76,7 +76,7 @@ thirdPromise
     createMessage('success', message);
   })
   .catch((err) => {
-    createMessage('error', err);
+    createMessage('error', err.message);
   });
 
 function createMessage(type, message) {
